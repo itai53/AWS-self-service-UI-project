@@ -108,7 +108,7 @@ volumes:
   - ~/.ssh:/root/.ssh:ro
 ```
 #### **🔴 Make sure that your ssh keys are under the ~/.shh file and then it will mount the keys to `/root/.ssh/<your_SSH_keys>` on your container**
-#### **- option 2: Alternatively, modify the docker-compose file and pass on the env variables of the the access keys or SHH keys (not recommended - less secure)**
+#### **- option 2: Alternatively, modify the docker-compose file and pass on the access keys or SHH keys (not recommended - less secure)**
 ```yaml
 environment:
   - AWS_ACCESS_KEY_ID=your_access_key
