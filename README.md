@@ -8,7 +8,7 @@ This project is a **FastAPI-based AWS provisioning system** with a **web-based U
 
 The system uses **FastAPI for the backend** and a **static HTML frontend** with JavaScript to interact with the backend APIs.
 
-![alt text](API-ERST.jpeg)
+![alt text](STUFF/API-ERST.jpeg)
 
 ## **Features ✨**
 - 📡 **Manage EC2 Instances** (Create, Start, Stop, Terminate)
@@ -19,7 +19,7 @@ The system uses **FastAPI for the backend** and a **static HTML frontend** with 
 
 ---
 ## **Demo 🎥**
-![alt text](demo.gif)
+![alt text](STUFF/demo.gif)
 
 ## **Installation and Setup ⚙️**
 There are two ways to run this project:  
