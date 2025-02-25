@@ -1,6 +1,8 @@
+services:
   myapp:
     build: .
     ports:
       - "8000:8000"
     volumes:
-      - ~/.aws:/root/.aws:ro
+      - ~/.aws:/root/.aws:ro # AWS credentials (read only)
+      - ~/.ssh:/root/.ssh:ro  # Mount SSH keys (read only)
