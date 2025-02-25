@@ -53,11 +53,7 @@ pip install -r requirements.txt
 
 #### **Step 4: Run the FastAPI Server** 
 ```bash
-<<<<<<< HEAD
-python3 -m backend.main # Depends what system you are using
-=======
 python3 -m backend.main 
->>>>>>> ca446df (update)
 ```
 
 #### **Step 5: Open the Web UI**
@@ -81,19 +77,19 @@ You can provide credentials in
 ```bash
 aws configure
 ```
-#### **Step 3: Clone the Repository**
+#### **Step 2: Clone the Repository**
 ```bash
 git clone  https://github.com/itai53/AWS-self-service-UI-project.git
 cd AWS-self-service-UI-project
 ```
 
-#### **Step 2: Run with Docker Compose**
+#### **Step 3: Run with Docker Compose**
 ```bash
 docker-compose up --build
 ```
 Note: the container will automatically detect access keys them from `~/.aws/credentials`.
 
-#### **Step 3: Open the Web UI**
+#### **Step 4: Open the Web UI**
 Once the container is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
