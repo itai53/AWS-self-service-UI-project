@@ -61,6 +61,10 @@ Once the server is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
 ```
+⚠️ #### **Iportent: if you are using docker container plese provide the shh key as follwes:**
+```bash
+/root/.ssh/<your_publick_key>
+```
 
 ---
 
