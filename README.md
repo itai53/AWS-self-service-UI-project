@@ -87,7 +87,7 @@ cd AWS-self-service-UI-project
 ```bash
 docker-compose up --build
 ```
-#### **⚠️ Important: If you are accessing the web UI using a container, please provide the SSH key as follows when trying to create an EC2 instance:**
+#### **⚠️ Important: If you are accessing the web UI using a container, please provide on the web page the SSH key as follows when trying to create an EC2 instance:**
 ```bash
 /root/.ssh/<your_public_key>
 ```
