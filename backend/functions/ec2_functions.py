@@ -12,6 +12,20 @@ subnet_id = data.get("subnet-id")
 security_group = data.get("security-group")
 
 def get_or_create_key_pair_boto(pubkey_path: str) -> str:
+    # Check if running inside a Docker container
+    running_in_container = os.path.exists("/.dockerenv")
+    
+    if running_in_container:
+        # Inside container: Force correct SSH path
+        if not pubkey_path.startswith("/root/.ssh/"):
+            pubkey_path = os.path.join("/root/.ssh", os.path.basename(pubkey_path))
+    else:
+        # Running locally: Ensure it's an absolute path
+        if not os.path.isfile(pubkey_path):
+            error_msg = f"Error: Public key file '{pubkey_path}' does not exist."
+            print(error_msg)
+            return {"error": error_msg}
+
     basename = os.path.basename(pubkey_path)
     # Remove .pem.pub or .pub if present
     if basename.endswith(".pem.pub"):
