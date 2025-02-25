@@ -61,10 +61,6 @@ Once the server is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
 ```
-⚠️ #### **Iportent: if you are using docker container plese provide the shh key as follwes:**
-```bash
-/root/.ssh/<your_publick_key>
-```
 
 ---
 
@@ -91,7 +87,10 @@ cd AWS-self-service-UI-project
 ```bash
 docker-compose up --build
 ```
-Note: the container will automatically detect access keys them from `~/.aws/credentials`.
+#### **⚠️ Iportent: if you are using docker container plese provide the shh key as follwes:**
+```bash
+/root/.ssh/<your_publick_key>
+```
 
 #### **Step 4: Open the Web UI**
 Once the container is running, open your browser and go to:
