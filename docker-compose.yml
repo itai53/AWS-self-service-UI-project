@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  myapp:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.aws:/root/.aws:ro

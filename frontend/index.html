@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloud Management UI</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    h2 {
+      color: #333;
+    }
+    /* Navbar */
+    .navbar {
+      background-color: #007bff;
+      overflow: hidden;
+    }
+    .navbar a {
+      float: left;
+      display: block;
+      color: #fff;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+    .navbar a:hover {
+      background-color: #0056b3;
+    }
+    /* Container */
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    /* Sections */
+    section {
+      display: none; /* Hidden by default */
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    section.active {
+      display: block;
+    }
+    /* Listing Panels */
+    .listing-panel {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #eef2f7;
+    }
+    /* Forms & Fieldsets */
+    form {
+      margin-bottom: 20px;
+    }
+    fieldset {
+      border: 1px solid #ddd;
+      padding: 15px 20px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    legend {
+      font-weight: bold;
+      color: #007bff;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"],
+    select,
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    small {
+      color: #555;
+    }
+    /* Buttons */
+    button {
+      padding: 10px 15px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #fff;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .btn-green {
+      background-color: #28a745;
+    }
+    .btn-green:hover {
+      background-color: #218838;
+    }
+    .btn-red {
+      background-color: #dc3545;
+    }
+    .btn-red:hover {
+      background-color: #c82333;
+    }
+    .btn-orange {
+      background-color: #fd7e14;
+    }
+    .btn-orange:hover {
+      background-color: #e8590c;
+    }
+    .btn-default {
+      background-color: #343a40;
+    }
+    .btn-default:hover {
+      background-color: #23272b;
+    }
+    /* Button Group */
+    .btn-group button {
+      margin-right: 5px;
+    }
+    /* Link styling */
+    a.doc-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a.doc-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <a href="#" onclick="showSection('ec2-section')">EC2</a>
+    <a href="#" onclick="showSection('s3-section')">S3</a>
+    <a href="#" onclick="showSection('route53-section')">Route53</a>
+  </div>
+
+  <div class="container">
+    <!-- EC2 Section -->
+    <section id="ec2-section" class="active">
+      <h2>EC2 Instance Management</h2>
+      
+      <!-- EC2 Listing Panel -->
+      <div class="listing-panel">
+        <button id="list-ec2-btn" class="btn-default">List Instances</button>
+        <div id="ec2-list"></div>
+      </div>
+
+      <!-- Create EC2 Instance Form -->
+      <form id="create-ec2-form">
+        <fieldset>
+          <legend>Create EC2 Instance</legend>
+          <label for="instance-name">Instance Name:</label>
+          <input type="text" id="instance-name" name="instance_name" placeholder="Enter instance name" />
+          <label>Instance Type:</label>
+          <label><input type="radio" name="instance_type" value="t3.nano" checked /> t3.nano</label>
+          <label><input type="radio" name="instance_type" value="t4g.nano" /> t4g.nano</label>
+          <br />
+          <label>AMI Choice:</label>
+          <label><input type="radio" name="ami" value="ubuntu" checked /> Ubuntu AMI</label>
+          <label><input type="radio" name="ami" value="amazon-linux" /> Amazon Linux AMI</label>
+          <br />
+          <label for="ssh-key-path"> SSH Public Key Path (.pem.pub):</label>
+          <input type="text" id="ssh-key-path" name="ssh_key_path" placeholder="Enter /path/to/.pem.pub/" />
+          <p><small>Note: A maximum of 2 running instances is allowed.</small></p>
+          <button type="submit" class="btn-green">Create Instance</button>
+        </fieldset>
+      </form>
+
+      <!-- Manage EC2 Instance Form -->
+      <form id="manage-ec2-form">
+        <fieldset>
+          <legend>Manage EC2 Instance</legend>
+          <label for="instance-identifier">Instance ID or Name:</label>
+          <input type="text" id="instance-identifier" name="instance_identifier" placeholder="Enter instance ID or Name" />
+          <div class="btn-group">
+            <button type="button" onclick="startInstance()" class="btn-green">Start Instance</button>
+            <button type="button" onclick="stopInstance()" class="btn-red">Stop Instance</button>
+            <button type="button" onclick="terminateInstance()" class="btn-orange">Terminate Instance</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- S3 Section -->
+    <section id="s3-section">
+      <h2>S3 Bucket Management</h2>
+      
+      <!-- S3 Listing Panel -->
+      <div class="listing-panel">
+        <button id="list-s3-btn" class="btn-default">List Buckets</button>
+        <div id="s3-list"></div>
+      </div>
+      
+      <!-- Create S3 Bucket Form -->
+      <form id="create-s3-form">
+        <fieldset>
+          <legend>Create S3 Bucket</legend>
+          <label for="bucket-name">Bucket Name:</label>
+          <input type="text" id="bucket-name" name="bucket_name" placeholder="Enter bucket name" required />
+          <small>
+            <a class="doc-link" href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html?icmpid=docs_amazons3_console" target="_blank">
+              See link on how to name a S3 bucket
+            </a>
+          </small>
+          <br />
+          <label>Access Type:</label>
+          <select id="bucket-access" name="bucket_access">
+            <option value="private">Private</option>
+            <option value="public">Public</option>
+          </select>
+          <div id="public-confirmation" style="display: none; margin-top: 10px;">
+            <label>
+              <input type="checkbox" id="public-confirm" name="public_confirm" />
+              Are you sure you want public access?
+            </label>
+          </div>
+          <br />
+          <button type="submit" class="btn-green">Create Bucket</button>
+        </fieldset>
+      </form>
+
+      <!-- File Upload to S3 Form -->
+      <form id="upload-file-form" enctype="multipart/form-data">
+        <fieldset>
+          <legend>Upload File to S3 Bucket</legend>
+          <label for="upload-bucket">Bucket Name:</label>
+          <input type="text" id="upload-bucket" name="bucket_name" placeholder="Enter your bucket name" required />
+          <br />
+          <label for="file-upload">Choose File:</label>
+          <input type="file" id="file-upload" name="file" />
+          <br />
+          <button type="submit" class="btn-green">Upload File</button>
+        </fieldset>
+      </form>
+
+      <!-- Delete S3 Bucket Form -->
+      <form id="delete-s3-form">
+        <fieldset>
+          <legend>Delete S3 Bucket</legend>
+          <label for="delete-bucket">Bucket Name:</label>
+          <input type="text" id="delete-bucket" name="bucket_name" placeholder="Enter bucket name" required />
+          <button type="button" onclick="deleteBucket()" class="btn-red">Delete Bucket</button>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- Route53 Section -->
+    <section id="route53-section">
+      <h2>Route53 DNS Management</h2>
+      
+      <!-- Route53 Zones Listing Panel -->
+      <div class="listing-panel">
+        <button id="list-zones-btn" class="btn-default">List Zones</button>
+        <div id="zones-list"></div>
+      </div>
+      
+      <!-- Create DNS Zone Form -->
+      <form id="create-zone-form">
+        <fieldset>
+          <legend>Create DNS Zone</legend>
+          <label for="zone-name">Zone Name:</label>
+          <input type="text" id="zone-name" name="zone_name" placeholder="Enter zone name" required />
+          <button type="submit" class="btn-green">Create Zone</button>
+        </fieldset>
+      </form>
+      
+      <!-- Delete DNS Zone Form -->
+      <form id="delete-zone-form">
+        <fieldset>
+          <legend>Delete DNS Zone</legend>
+          <label for="delete-zone-id">Zone ID:</label>
+          <input type="text" id="delete-zone-id" name="zone_id" placeholder="Enter zone ID" required />
+          <button type="button" onclick="deleteZone()" class="btn-red">Delete Zone</button>
+        </fieldset>
+      </form>
+      
+      <!-- List DNS Records Form -->
+      <form id="list-records-form">
+        <fieldset>
+          <legend>List DNS Records</legend>
+          <label for="records-zone-id">Zone ID:</label>
+          <input type="text" id="records-zone-id" name="zone_id" placeholder="Enter zone ID" required />
+          <button type="button" onclick="listRecords()" class="btn-default">List Records</button>
+          <div id="records-list" class="listing-panel"></div>
+        </fieldset>
+      </form>
+      
+      <!-- Manage DNS Records Form -->
+      <form id="manage-dns-form">
+        <fieldset>
+          <legend>Manage DNS Records</legend>
+          <label for="zone-id">Zone ID:</label>
+          <input type="text" id="zone-id" name="zone_id" placeholder="Enter zone ID" required />
+          <br />
+          <label for="record-name">Record Name:</label>
+          <input type="text" id="record-name" name="record_name" placeholder="Enter record name" required />
+          <br />
+          <label for="record-type">Record Type:</label>
+          <select id="record-type" name="record_type">
+            <option value="A">A</option>
+            <option value="CNAME">CNAME</option>
+          </select>
+          <br />
+          <label for="record-value">Record Value:</label>
+          <input type="text" id="record-value" name="record_value" placeholder="Enter record value" required />
+          <div class="btn-group">
+            <button type="button" onclick="createDNSRecord()" class="btn-green">Create Record</button>
+            <button type="button" onclick="updateDNSRecord()" class="btn-orange">Update Record</button>
+            <button type="button" onclick="deleteDNSRecord()" class="btn-red">Delete Record</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+  </div>
+
+  <!-- JavaScript for Navigation and API Calls -->
+  <script>
+    // Function to show/hide sections
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll("section");
+      sections.forEach(section => section.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+    }
+  
+    document.addEventListener("DOMContentLoaded", function() {
+      // Default: show EC2 section
+      showSection('ec2-section');
+  
+      // Toggle public confirmation for S3 bucket access
+      document.getElementById("bucket-access").addEventListener("change", function(e) {
+        document.getElementById("public-confirmation").style.display = e.target.value === "public" ? "block" : "none";
+      });
+  
+      // EC2: Create Instance 
+      document.getElementById("create-ec2-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const instanceName = document.getElementById("instance-name").value;
+        const instanceType = document.querySelector('input[name="instance_type"]:checked').value;
+        const ami = document.querySelector('input[name="ami"]:checked').value;
+        const sshKeyPath = document.getElementById("ssh-key-path").value;
+        fetch("http://localhost:8000/api/ec2/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            instance_name: instanceName, 
+            instance_type: instanceType, 
+            ami: ami,
+            pubkey_path: sshKeyPath
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("EC2 instance created successfully");
+        })
+        .catch(error => console.error("Error:", error));
+      });
+  
+      // EC2: List Instances
+      document.getElementById("list-ec2-btn").addEventListener("click", function() {
+        fetch("http://localhost:8000/api/ec2/list", { method: "GET" })
+          .then(response => response.json())
+          .then(data => {
+            if (data.instances && data.instances.length > 0) {
+              let formatted = "EC2 Instances:<br>";
+              data.instances.forEach(instance => {
+                formatted += `<span style="color: green;">- ID:</span> ${instance.id} <span style="color: green;">- Name:</span> ${instance.name} <span style="color: green;">- Public IP:</span> ${instance.public_ip} <span style="color: green;">- State:</span> ${instance.state}<br>`;
+              });
+              document.getElementById("ec2-list").innerHTML = formatted;
+            } else {
+              document.getElementById("ec2-list").innerHTML = "No instances found.";
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      });
+  
+      // S3: Create Bucket 
+      document.getElementById("create-s3-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const bucketName = document.getElementById("bucket-name").value;
+        const access = document.getElementById("bucket-access").value;
+
+        if (access === "public" && !document.getElementById("public-confirm").checked) {
+            alert("Please confirm public access.");
+            return;
+        }
+
+        fetch("http://localhost:8000/api/s3/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bucket_name: bucketName, access: access })
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            if (status >= 400) {
+                alert("Error creating S3 bucket: " + body.detail);
+            } else {
+                alert(body.message);
+            }
+        })
+        .catch(error => {
+            alert( error.message);
+        });
+    });
+
+
+  
+      // S3: Upload File Form
+      document.getElementById("upload-file-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const bucketName = document.getElementById("upload-bucket").value;
+        const fileInput = document.getElementById("file-upload");
+        const formData = new FormData();
+        formData.append("bucket_name", bucketName);
+        formData.append("file", fileInput.files[0]);
+        fetch("http://localhost:8000/api/s3/upload", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("File uploaded successfully");
+        })
+        .catch(error => console.error("Error:", error));
+      });
+  
+      // S3: List Buckets
+      document.getElementById("list-s3-btn").addEventListener("click", function() {
+        fetch("http://localhost:8000/api/s3/list", { method: "GET" })
+          .then(response => response.json())
+          .then(data => {
+            if (data.buckets && data.buckets.length > 0) {
+              let formatted = "S3 buckets:<br>";
+              data.buckets.forEach(bucket => {
+                formatted += `<span style="color: green;">- Bucket Name:</span> ${bucket.BucketName} <span style="color: green;">- Access:</span> ${bucket.Access}<br>`;
+              });
+              document.getElementById("s3-list").innerHTML = formatted;
+            } else if (data.message) {
+              document.getElementById("s3-list").innerHTML = data.message;
+            } else {
+              document.getElementById("s3-list").innerHTML = "No buckets found.";
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      });
+  
+      
+  
+      // Route53: Create Zone Form
+      document.getElementById("create-zone-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const zoneName = document.getElementById("zone-name").value;
+        fetch("http://localhost:8000/api/route53/zone/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ zone_name: zoneName })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("DNS Zone created successfully");
+        })
+        .catch(error => console.error("Error:", error));
+      });
+  
+      // Route53: List Zones
+      document.getElementById("list-zones-btn").addEventListener("click", function() {
+        fetch("http://localhost:8000/api/route53/zone/list", { method: "GET" })
+          .then(response => response.json())
+          .then(data => {
+            if (data.zones && data.zones.length > 0) {
+              let formatted = "";
+              data.zones.forEach(zone => {
+                formatted += `<span style="color: green;">- Zone ID:</span> ${zone.ZoneId} <span style="color: green;">- HostName:</span> ${zone.HostName}<br>`;
+              });
+              document.getElementById("zones-list").innerHTML = formatted;
+            } else if (data.message) {
+              document.getElementById("zones-list").innerHTML = data.message;
+            } else {
+              document.getElementById("zones-list").innerHTML = "No zones found.";
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      });
+  
+  
+    });
+  
+    // EC2 Instance Management Functions
+    function startInstance() {
+      const instanceIdentifier = document.getElementById("instance-identifier").value;
+      fetch("http://localhost:8000/api/ec2/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instance_identifier: instanceIdentifier })
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.detail || "Unknown error"); });
+          }
+          return response.json();
+        })
+        .then(data => alert("Instance started successfully"))
+        .catch(error => alert("Error: " + error.message));
+    }
+
+    function stopInstance() {
+      const instanceIdentifier = document.getElementById("instance-identifier").value;
+      fetch("http://localhost:8000/api/ec2/stop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instance_identifier: instanceIdentifier })
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.detail || "Unknown error"); });
+          }
+          return response.json();
+        })
+        .then(data => alert("Instance stopped successfully"))
+        .catch(error => alert("Error: " + error.message));
+    }
+  
+    function terminateInstance() {
+      const instanceIdentifier = document.getElementById("instance-identifier").value;
+      fetch("http://localhost:8000/api/ec2/terminate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instance_identifier: instanceIdentifier })
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.detail || "Unknown error"); });
+          }
+          return response.json();
+        })
+        .then(data => alert("Instance terminated successfully"))
+        .catch(error => alert("Error: " + error.message));
+    }
+  
+    // S3: Delete Bucket Function
+    function deleteBucket() {
+      const bucketName = document.getElementById("delete-bucket").value.trim();
+      if (!bucketName) {
+        alert("Please enter a valid bucket name.");
+        return;
+      }
+      fetch("http://localhost:8000/api/s3/delete/" + encodeURIComponent(bucketName), {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => {
+        if (!response.ok) {
+          // Try to parse error message from response JSON, otherwise use a default message.
+          return response.json().then(err => {
+            throw new Error(err.detail || "An unknown error occurred while deleting the bucket.");
+          });
+        }
+        return response.json();
+      })
+      .then(data => alert(data.message))
+      .catch(error => {
+        const errMsg = error.message ? error.message : "An unknown error occurred.";
+        alert("Error: " + errMsg);
+      });
+    }
+
+  
+    // Route53: Delete Zone Function
+    function deleteZone() {
+      const zoneId = document.getElementById("delete-zone-id").value;
+      fetch("http://localhost:8000/api/route53/zone/delete?zone_id=" + encodeURIComponent(zoneId), {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => alert(data.message))
+      .catch(error => console.error("Error:", error));
+    }
+  
+    // Route53: List DNS Records Function
+    function listRecords() {
+  const zoneId = document.getElementById("records-zone-id").value;
+  fetch("http://localhost:8000/api/route53/record/list?zone_id=" + encodeURIComponent(zoneId), { method: "GET" })
+    .then(response => response.json())
+    .then(data => {
+      let formatted = "";
+      if (data.records && data.records.length > 0) {
+        data.records.forEach(record => {
+          formatted += `<span style="color: green;">- Name: </span>${record.Name}, <span style="color: green;">Type: </span>${record.Type}, <span style="color: green;">TTL: </span>${record.TTL}, <span style="color: green;">Values: </span>${record.Values}\n`;
+        });
+      } else if (data.message) {
+        formatted = data.message;
+      } else if (data.error) {
+        formatted = data.error;
+      } else {
+        formatted = "No DNS records found.";
+      }
+      document.getElementById("records-list").innerHTML = formatted;
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+    // Route53: DNS Record Management Functions
+    function createDNSRecord() {
+      const zoneId = document.getElementById("zone-id").value;
+      const recordName = document.getElementById("record-name").value;
+      const recordType = document.getElementById("record-type").value;
+      const recordValue = document.getElementById("record-value").value;
+      fetch("http://localhost:8000/api/route53/record/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ zone_id: zoneId, record_name: recordName, record_type: recordType, record_value: recordValue })
+      })
+      .then(response => response.json())
+      .then(data => alert("DNS record created successfully"))
+      .catch(error => console.error("Error:", error));
+    }
+  
+    function updateDNSRecord() {
+      const zoneId = document.getElementById("zone-id").value;
+      const recordName = document.getElementById("record-name").value;
+      const recordType = document.getElementById("record-type").value;
+      const recordValue = document.getElementById("record-value").value;
+      const payload = {
+        zone_id: zoneId,
+        record_name: recordName,
+        record_type: recordType,
+        record_value: recordValue,
+        ttl: 300  // default TTL
+      };
+
+      fetch("http://localhost:8000/api/route53/record/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.detail); });
+        }
+        return response.json();
+      })
+      .then(data => alert("DNS record updated successfully"))
+      .catch(error => alert("Error: " + error.message));
+    }
+      
+    function deleteDNSRecord() {
+      const zoneId = document.getElementById("zone-id").value;
+      const recordName = document.getElementById("record-name").value;
+      fetch(
+        `http://localhost:8000/api/route53/record/delete?zone_id=${encodeURIComponent(zoneId)}&record_name=${encodeURIComponent(recordName)}`,
+        {
+          method: "DELETE"
+        }
+      )
+        .then(response => response.json())
+        .then(data => alert("DNS record deleted successfully"))
+        .catch(error => console.error("Error:", error));
+    }
+  </script>
+</body>
+</html>

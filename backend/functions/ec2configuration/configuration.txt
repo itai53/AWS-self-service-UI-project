@@ -1,0 +1,2 @@
+security-group:sg-0b41d2832c2c6f010
+subnet-id:subnet-0f650053a129957ac

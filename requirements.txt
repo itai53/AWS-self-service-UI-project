@@ -1,0 +1,4 @@
+fastapi==0.95.2
+uvicorn==0.22.0
+boto3
+python-multipart
