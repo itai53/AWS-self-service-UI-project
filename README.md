@@ -24,9 +24,9 @@ The system uses **FastAPI for the backend** and a **static HTML frontend** with 
 ## **Installation and Setup ⚙️**
 There are two ways to run this project:  
 1. **Local Setup - Using Python 🐍**
-2. **Docker Setup - Recommended 🐳**
+2. **Docker Setup - Using Docker engine 🐳**
 
-### **1️⃣ Running Locally (Without Docker)🐍**
+### **1️⃣ Running Locally 🐍**
 #### **Prerequisites 📦**
 - **Python 3.9+**
 - **AWS CLI configured** (`aws configure`)
@@ -64,7 +64,7 @@ http://127.0.0.1:8000
 
 ---
 
-### **2️⃣ Running with Docker (Recommended) 🐳**
+### **2️⃣ Running with Docker 🐳**
 #### **Prerequisites 📦**
 - **Docker installed** ([Download Docker](https://docs.docker.com/get-docker/))
 - **AWS Credentials configured on your local machine** (`aws configure`)
