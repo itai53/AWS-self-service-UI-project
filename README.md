@@ -114,9 +114,14 @@ environment:
   - AWS_ACCESS_KEY_ID=your_access_key
   - AWS_SECRET_ACCESS_KEY=your_secret_key
   - AWS_DEFAULT_REGION=us-east-1
+  - SSH_PRIVATE_KEY=/root/.ssh/your_private_key.pem
 ```
+#### ⚠️ Security Warning:
+It’s recommended not to hardcode credentials inside docker-compose.yml.
+Refer to this [Docker documentation](http://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) for guidance on how to reference a `.env` file in Docker Compose.
 
-### **2️⃣ To connect to EC2 instances via SSH, generate an SSH key pair in PEM format on your local system:**
+
+### **2️⃣ To connect to EC2 instances via SSH, generate an SSH key pair in PEM format on your locall system:**
 ```bash
 ssh-keygen -t rsa -b 4096 -m PEM -f mykey.pem
 ```
