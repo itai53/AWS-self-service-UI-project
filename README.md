@@ -121,7 +121,7 @@ It’s recommended not to hardcode credentials inside docker-compose.yml.
 Refer to this [Docker documentation](http://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) for guidance on how to reference a `.env` file in Docker Compose to use variables insted.
 
 
-### **2️⃣ To connect to EC2 instances via SSH, generate an SSH key pair in PEM format on your locall system:**
+### **2️⃣ To connect to an  EC2 instances via SSH, generate an SSH key pair in PEM format on your locall system:**
 ```bash
 ssh-keygen -t rsa -b 4096 -m PEM -f mykey.pem
 ```
