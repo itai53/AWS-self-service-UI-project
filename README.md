@@ -89,7 +89,7 @@ docker-compose up --build
 ```
 #### **⚠️ Important: If you are accessing the web UI using a container, please provide the SSH key as follows when trying to create an EC2 instance:**
 ```bash
-/root/.ssh/<your_publick_key>
+/root/.ssh/<your_public_key>
 ```
 
 #### **Step 4: Open the Web UI**
@@ -107,7 +107,7 @@ volumes:
   - ~/.aws:/root/.aws:ro
   - ~/.ssh:/root/.ssh:ro
 ```
-#### **🔴 make sure that your ssh keys are under the ~/.shh file**
+#### **🔴 Make sure that your ssh keys are under the ~/.shh file and then it will mount the keys to `/root/.ssh/<your_SSH_keys>` on your container **
 #### **- option 2: Alternatively, modify the docker-compose file and pass on the env variables of the the access keys or SHH keys (not recommended - less secure)**
 ```yaml
 environment:
