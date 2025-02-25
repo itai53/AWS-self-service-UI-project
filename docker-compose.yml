@@ -1,4 +1,3 @@
-services:
   myapp:
     build: .
     ports:
