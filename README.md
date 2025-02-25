@@ -98,11 +98,13 @@ http://127.0.0.1:8000
 ---
 ## **NOTE ❗️**
 ### **1️⃣ you can modify the way that `docker-compose.yml` will read the access keys:**
-#### **- option 1: By default the docker-compose mounts your local credentials (recommended)**:
+#### **- option 1: By default the docker-compose mounts your local credentials ans SSH keys in read only permisson (recommended)**:
 ```yaml
 volumes:
   - ~/.aws:/root/.aws:ro
+  - ~/.ssh:/root/.ssh:ro
 ```
+#### **make sure that your ssh keys are under the ~/.shh file**
 #### **- option 2: Alternatively, modify the docker-compose file and pass on the env variables of the the access keys (not recommended - less secure)**
 ```yaml
 environment:
