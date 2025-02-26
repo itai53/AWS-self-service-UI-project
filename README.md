@@ -89,7 +89,7 @@ docker-compose up --build
 ```
 #### **⚠️ Important: If you are accessing the web UI using a container, please provide on the web page the SSH key as follows when trying to create an EC2 instance:**
 ```bash
-/root/.ssh/<your_public_key>
+/UI_user/.ssh/<your_public_key>
 ```
 
 #### **Step 4: Open the Web UI**
