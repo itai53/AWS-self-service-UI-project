@@ -1,4 +1,4 @@
-# AWS Management Console - Web UI 🚀 
+# AWS Management Console - Web UI 
 
 ## **Overview 📄**
 This project is a **FastAPI-based AWS provisioning system** with a **web-based UI** that allows users to manage AWS resources including:
