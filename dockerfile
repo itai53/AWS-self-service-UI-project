@@ -1,5 +1,5 @@
 FROM python:3.9-slim
-RUN groupadd -g 1000 UI_user && useradd -m -u 1000 -g UI_user UI_user
+RUN useradd -m UI_user 
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt 
