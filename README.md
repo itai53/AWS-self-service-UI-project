@@ -61,7 +61,7 @@ Once the server is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
 ```
-##### **Generate an SSH key pair in PEM formatto on your locall macine in the ~/.ssh file (see example below in "NOTE❗")**
+#### **Generate an SSH key pair in PEM formatto on your locall macine in the ~/.ssh file (see example below in "NOTE❗")**
 
 
 ---
