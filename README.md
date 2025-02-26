@@ -174,7 +174,7 @@ This will generate mykey.pem (private key) and mykey.pem.pub (public key).
 - Ensure the bucket name follows AWS rules (e.g., lowercase, no spaces).
 
 ---
-## Folder structure
+## Folder structure 🗄️
 ```bash
 .
 ├── README.md                     # Documentation
