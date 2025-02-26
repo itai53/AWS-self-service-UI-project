@@ -61,6 +61,8 @@ Once the server is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
 ```
+##### **Generate an SSH key pair in PEM formatto on your locall macine in the ~/.ssh file (see example below in "NOTE❗")**
+
 
 ---
 
@@ -87,16 +89,18 @@ cd AWS-self-service-UI-project
 ```bash
 docker-compose up --build
 ```
-#### **⚠️ Important: If you are accessing the web UI using a container, please provide on the web page the SSH key as follows when trying to create an EC2 instance:**
-```bash
-/UI_user/.ssh/<your_public_key>
-```
+
 
 #### **Step 4: Open the Web UI**
 Once the container is running, open your browser and go to:
 ```
 http://127.0.0.1:8000
 ```
+#### **⚠️ Important: If you are accessing the web UI using a container, please provide on the web page the SSH key as follows when trying to create an EC2 instance:**
+```bash
+/UI_user/.ssh/<your_public_key>
+```
+ This is where your SSH key will be in the container environment
 
 ---
 ## **NOTE ❗️**
