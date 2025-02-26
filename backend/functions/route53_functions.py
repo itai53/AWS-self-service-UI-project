@@ -39,7 +39,6 @@ def list_dns_records(zone_id):
             name = record.get('Name')
             record_type = record.get('Type')
             ttl = record.get('TTL', 'N/A')
-            # Some records (like NS/SOA) may not have 'ResourceRecords'
             values = ', '.join([r.get('Value') for r in record.get('ResourceRecords', [])]) if record.get('ResourceRecords') else "N/A"
             record_list.append({
                 "Name": name,
@@ -154,26 +153,28 @@ def create_route53_zone(zone_name):
 def list_route53_zones():
     client = boto3.client('route53')
     zones = client.list_hosted_zones()['HostedZones']
-    cli_managed_zones = [
-        {
-            "ZoneId": i['Id'],
-            "HostName": i['Name']
-        }
-        for i in zones
-        if any(
-            tag['Key'] == 'cli-managed' and tag['Value'] == 'true'
-            for tag in client.list_tags_for_resource(
-                ResourceType='hostedzone',
-                ResourceId=i['Id'].split('/')[-1]
-            )['ResourceTagSet']['Tags']
-        )
-    ]
+    
+    cli_managed_zones = []
+    for zone in zones:
+        zone_id = zone['Id'].split('/')[-1]  # Extract only the Zone ID
+        try:
+            tags = client.list_tags_for_resource(ResourceType='hostedzone', ResourceId=zone_id)['ResourceTagSet']['Tags']
+            if any(tag['Key'] == 'cli-managed' and tag['Value'] == 'true' for tag in tags):
+                cli_managed_zones.append({
+                    "ZoneId": zone_id, 
+                    "HostName": zone['Name']
+                })
+        except Exception as e:
+            print(f"Error retrieving tags for {zone_id}: {e}")
+            continue 
+
     return cli_managed_zones
+
 
 
 def delete_hosted_zone(zone_id):
     client = boto3.client('route53')
-    # Check if the hosted zone is managed by the cli-managed = true
+    # Try to get tags for the hosted zone
     try:
         tags_response = client.list_tags_for_resource(
             ResourceType='hostedzone',
@@ -183,19 +184,21 @@ def delete_hosted_zone(zone_id):
         cli_managed = any(tag.get('Key') == 'cli-managed' and tag.get('Value') == 'true' for tag in tags)
     except Exception as e:
         print(f"Error retrieving tags for hosted zone {zone_id}: {e}")
-        return
+        return {"error": "Invalid or non-existent hosted zone ID."}  
+
     if not cli_managed:
-        print(f"Error: Hosted zone {zone_id} is not managed by this CLI. Deletion aborted.")
-        return
+        return {"message": "No CLI-managed zone found for deletion."}  
     # List all records in the zone
     try:
         response = client.list_resource_record_sets(HostedZoneId=zone_id)
         records = response.get('ResourceRecordSets', [])
     except Exception as e:
         print(f"Error listing records for hosted zone {zone_id}: {e}")
-        return
-    # Filter out the default NS and SOA records which AWS requires to remain
+        return {"error": "Failed to list records for the hosted zone."}  # ✅ More user-friendly error
+
+    # Filter out default NS and SOA records
     records_to_delete = [record for record in records if record.get('Type') not in ['NS', 'SOA']]
+
     # Delete each non-default record
     for record in records_to_delete:
         try:
@@ -211,9 +214,13 @@ def delete_hosted_zone(zone_id):
             )
         except Exception as e:
             print(f"Error deleting record {record.get('Name')} ({record.get('Type')}): {e}")
-    # Now, delete the hosted zone itself
+            return {"error": f"Failed to delete record {record.get('Name')}."}  
+
+    # Delete the hosted zone
     try:
         client.delete_hosted_zone(Id=zone_id)
         print(f"Hosted zone {zone_id} deleted successfully.")
+        return {"message": "Hosted zone deleted successfully."}  
     except Exception as e:
         print(f"Error deleting hosted zone {zone_id}: {e}")
+        return {"error": "Failed to delete hosted zone."}  

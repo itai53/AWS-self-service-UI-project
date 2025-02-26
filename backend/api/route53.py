@@ -37,8 +37,10 @@ async def list_zones():
 
 @router.delete("/zone/delete")
 async def delete_zone(zone_id: str):
-    route53_functions.delete_hosted_zone(zone_id)
-    return {"message": f"Hosted zone '{zone_id}' deletion initiated."}
+    response = route53_functions.delete_hosted_zone(zone_id)  
+    if "error" in response:
+        raise HTTPException(status_code=400, detail=response["error"])  
+    return response  
 
 @router.post("/record/create")
 async def create_record(request: DNSRecordCreateRequest):

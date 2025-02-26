@@ -422,8 +422,6 @@
             alert( error.message);
         });
     });
-
-
   
       // S3: Upload File Form
       document.getElementById("upload-file-form").addEventListener("submit", function(e) {
@@ -464,8 +462,6 @@
           .catch(error => console.error("Error:", error));
       });
   
-      
-  
       // Route53: Create Zone Form
       document.getElementById("create-zone-form").addEventListener("submit", function(e) {
         e.preventDefault();
@@ -487,22 +483,20 @@
         fetch("http://localhost:8000/api/route53/zone/list", { method: "GET" })
           .then(response => response.json())
           .then(data => {
+            let formatted = "";
             if (data.zones && data.zones.length > 0) {
-              let formatted = "";
               data.zones.forEach(zone => {
                 formatted += `<span style="color: green;">- Zone ID:</span> ${zone.ZoneId} <span style="color: green;">- HostName:</span> ${zone.HostName}<br>`;
               });
-              document.getElementById("zones-list").innerHTML = formatted;
             } else if (data.message) {
-              document.getElementById("zones-list").innerHTML = data.message;
+              formatted = data.message;
             } else {
-              document.getElementById("zones-list").innerHTML = "No zones found.";
+              formatted = "No CLI-managed zones found.";
             }
+            document.getElementById("zones-list").innerHTML = formatted;
           })
           .catch(error => console.error("Error:", error));
       });
-  
-  
     });
   
     // EC2 Instance Management Functions
@@ -584,19 +578,31 @@
       });
     }
 
-  
     // Route53: Delete Zone Function
     function deleteZone() {
-      const zoneId = document.getElementById("delete-zone-id").value;
-      fetch("http://localhost:8000/api/route53/zone/delete?zone_id=" + encodeURIComponent(zoneId), {
+      const zoneId = document.getElementById("delete-zone-id").value.trim();
+      if (!zoneId) {
+        alert("Please enter a valid Zone ID.");
+        return;
+      }
+
+      fetch(`http://localhost:8000/api/route53/zone/delete?zone_id=${encodeURIComponent(zoneId)}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
       })
-      .then(response => response.json())
-      .then(data => alert(data.message))
-      .catch(error => console.error("Error:", error));
+      .then(response => response.json().then(data => ({ status: response.status, body: data })))
+      .then(({ status, body }) => {
+        if (status >= 400 || body.error) {
+          alert("Error deleting hosted zone: " + (body.error || "No hosted zone found "));
+        } else {
+          alert(body.message);  
+        }
+      })
+      .catch(error => {
+        alert("Error deleting hosted zone: " + error.message);
+      });
     }
-  
+
     // Route53: List DNS Records Function
     function listRecords() {
   const zoneId = document.getElementById("records-zone-id").value;

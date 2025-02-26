@@ -8,7 +8,7 @@ This project is a **FastAPI-based AWS provisioning system** with a **web-based U
 
 The system uses **FastAPI for the backend** and a **static HTML frontend** with JavaScript to interact with the backend APIs.
 
-![alt text](STUFF/API-ERST.jpeg)
+![alt text](API-ERST.jpeg)
 
 ## **Features ✨**
 - 📡 **Manage EC2 Instances** (Create, Start, Stop, Terminate)
@@ -19,7 +19,7 @@ The system uses **FastAPI for the backend** and a **static HTML frontend** with 
 
 ---
 ## **Demo 🎥**
-![alt text](STUFF/demo.gif)
+![alt text](demo.gif)
 
 ## **Installation and Setup ⚙️**
 There are two ways to run this project:  
@@ -173,6 +173,34 @@ This will generate mykey.pem (private key) and mykey.pem.pub (public key).
 ### **"Bucket Name Invalid"**
 - Ensure the bucket name follows AWS rules (e.g., lowercase, no spaces).
 
+---
+## Folder structure
+```bash
+.
+├── README.md                     # Documentation
+├── STUFF
+│   ├── API-ERST.jpeg             # pic
+│   └── demo.gif                  # UI demo 
+├── backend                       # Backend (FastAPI app)
+│   ├── api                       # API routes
+│   │   ├── ec2.py                # EC2 endpoints
+│   │   ├── route53.py            # Route53 endpoints
+│   │   └── s3.py                 # S3 endpoints
+│   ├── functions
+│   │   ├── ec2_functions.py      # EC2 functions in python
+│   │   ├── ec2configuration      # Config for SG, subnet ID & scripts
+│   │   │   ├── configuration.txt
+│   │   │   ├── user_data_amazon-linux.sh
+│   │   │   └── user_data_ubuntu.sh
+│   │   ├── route53_functions.py   # route53 functions in python
+│   │   └── s3_functions.py        # S3 functions in python
+│   └── main.py                    # FastAPI entry point
+├── docker-compose.yml             # Docker Compose
+├── dockerfile                     # Docker file 
+├── frontend
+│   └── index.html                 # Main UI page
+└── requirements.txt               # Python dependencies 
+```
 ---
 ## Summary 📚
 
