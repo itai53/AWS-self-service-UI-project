@@ -108,8 +108,8 @@ http://127.0.0.1:8000
 #### **- option 1: By default the docker-compose mounts your local credentials ans SSH keys in read only permisson (recommended)**:
 ```yaml
 volumes:
-  - ~/.aws:/root/.aws:ro
-  - ~/.ssh:/root/.ssh:ro
+     - ~/.aws:/UI_user/.aws:ro 
+     - ~/.ssh:/UI_user/.ssh:ro
 ```
 #### **🔴 Make sure that your ssh keys are under the ~/.shh file and then it will mount the keys to `/root/.ssh/<your_SSH_keys>` on your container**
 #### **- option 2: Alternatively, modify the docker-compose file and pass on the access keys or SHH keys (not recommended - less secure)**
