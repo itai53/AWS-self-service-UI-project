@@ -4,5 +4,5 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ~/.aws:/root/.aws:ro # AWS credentials (read only)
-      - ~/.ssh:/root/.ssh:ro  # Mount SSH keys (read only)
+      - ~/.aws:/UI_user/.aws:ro # AWS credentials (read only)
+      - ~/.ssh:/UI_user/.ssh:ro  # Mount SSH keys (read only)
